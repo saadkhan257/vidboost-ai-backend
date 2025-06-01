@@ -4,10 +4,14 @@ import os
 from enhancer.upscaler import enhance_image
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for mobile frontend
+CORS(app)
 
 UPLOAD_FOLDER = "inputs"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+@app.route("/")
+def home():
+    return "🔥 VidBoost AI Backend is running! Use POST /enhance to upload an image."
 
 @app.route("/enhance", methods=["POST"])
 def enhance():
@@ -15,7 +19,6 @@ def enhance():
         return jsonify({"error": "No file uploaded"}), 400
 
     file = request.files["file"]
-
     if file.filename == "":
         return jsonify({"error": "Empty filename"}), 400
 
@@ -26,10 +29,10 @@ def enhance():
     # Run enhancement
     output_path = enhance_image(input_path)
 
-    if output_path and os.path.exists(output_path):
+    if output_path:
         return send_file(output_path, mimetype="image/png", as_attachment=True)
     else:
         return jsonify({"error": "Enhancement failed"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
