@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+inputs/
+outputs/
+temp/
+logs/
+models/
+venv/
+*.pth
+.env
